@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario SIBA-IA | Evaluación de Burnout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+<header class="sticky top-0 z-40 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a th:href="@{/}" class="font-extrabold text-2xl text-slate-700">
+            SIBA<span class="text-indigo-600">-IA</span>
+        </a>
+    </div>
+</header>
+<main>
+    <div class="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                Cuestionario de Burnout Académico (SIBA-IA)
+            </h1>
+            <p class="mt-3 text-lg text-slate-500 max-w-2xl mx-auto">
+                Por favor, responde de forma honesta según tu experiencia actual en la universidad.
+            </p>
+        </div>
+        <form th:action="@{/estudiante/guardar-evaluacion}"
+              th:object="${evaluacion}"
+              method="post"
+              class="space-y-12">
+            <input type="hidden" th:field="*{estudiante.id}" />
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-8 space-y-8">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-xl font-bold text-indigo-600 flex items-center gap-2">
+                        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-sm font-semibold text-indigo-600">1</span>
+                        Dimensión 1: Agotamiento Emocional
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Evaluación del cansancio psicológico</p>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA1. Me siento agotado por las actividades académicas que debo realizar.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba1}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA2. Al finalizar mis jornadas de estudio me siento física y mentalmente cansado.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba2}" th:value="${i}" class="sr-only peer" required>
+                                <div class=" text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA3. Las exigencias académicas me generan sensación de agotamiento.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba3}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA4. Me cuesta recuperar energía después de una jornada académica intensa.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba4}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA5. Siento que las responsabilidades académicas superan mis recursos personales.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba5}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-8 space-y-8">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-xl font-bold text-indigo-600 flex items-center gap-2">
+                        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-sm font-semibold text-indigo-600">2</span>
+                        Dimensión 2: Despersonalización o Cinismo Académico
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Evaluación de la actitud hacia el estudio</p>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA6. He perdido interés por algunas actividades académicas.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba6}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA7. Me siento indiferente respecto a mis estudios.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba7}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA8. Realizo mis actividades académicas sin entusiasmo.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba8}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA9. Considero que muchas actividades académicas tienen poco sentido para mí.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba9}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA10. Evito involucrarme más de lo necesario en actividades académicas.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba10}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-8 space-y-8">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-xl font-bold text-indigo-600 flex items-center gap-2">
+                        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-sm font-semibold text-indigo-600">3</span>
+                        Dimensión 3: Baja Eficacia Académica
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Evaluación del auto-concepto de competencia</p>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA11. Dudo de mi capacidad para cumplir adecuadamente con mis responsabilidades académicas.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba11}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA12. Siento que mis logros académicos son menores de lo esperado.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba12}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA13. Me resulta difícil alcanzar los objetivos académicos que me propongo.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba13}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA14. Considero que mi desempeño académico ha disminuido.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba14}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA15. Me siento poco competente frente a las exigencias universitarias.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba15}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-8 space-y-8">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-xl font-bold text-indigo-600 flex items-center gap-2">
+                        <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-sm font-semibold text-indigo-600">4</span>
+                        Dimensión 4: Estrés Académico Persistente
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Evaluación de las respuestas de sobrecarga</p>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA16. Me preocupa constantemente el cumplimiento de tareas y evaluaciones.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba16}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA17. Siento tensión cuando pienso en mis obligaciones académicas.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba17}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA18. Experimento estrés frecuente debido a la carga académica.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba18}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA19. Tengo dificultades para desconectarme mentalmente de mis estudios.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba19}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <p class="font-medium text-slate-700">BA20. Las actividades universitarias afectan mi bienestar personal.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5 w-full">
+                        <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                            <label class="cursor-pointer">
+                                <input type="radio" th:field="*{ba20}" th:value="${i}" class="sr-only peer" required>
+                                <div class="text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 peer-checked:bg-indigo-50 peer-checked:border-indigo-500 peer-checked:text-indigo-700 transition-all duration-150">
+                                    <span th:text="${i == 1 ? 'Nunca' : i == 2 ? 'Casi nunca' : i == 3 ? 'A veces' : i == 4 ? 'Casi siempre' : 'Siempre'}"></span>
+                                </div>
+                            </label>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center pt-4">
+                <button type="submit"
+                        class="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-12 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200 transition-all duration-150 active:scale-95 cursor-pointer">
+                    Finalizar Evaluación
+                    <svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+<footer class="py-4 text-center text-sm text-slate-500">
+    SIBA-IA © 2026 • Sistema Inteligente para la Evaluación del Burnout Académico
+</footer>
+</body>
+</html>

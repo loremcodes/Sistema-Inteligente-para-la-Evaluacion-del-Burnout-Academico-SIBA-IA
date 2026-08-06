@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reportes - SIBA-IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#4f46e5',
+                            blue: '#06b6d4'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 overflow-hidden h-screen">
+<div class="flex h-full w-full">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+        <div th:replace="~{admin/fragments/navbar :: navbar}"></div>
+        <main class="flex-1 p-6 flex flex-col justify-between overflow-hidden space-y-4">
+
+            <div class="flex justify-between items-end flex-shrink-0">
+                <div>
+                    <span class="inline-block px-3 py-1 text-xs font-semibold text-indigo-700 bg-indigo-50 rounded-full mb-1">MÓDULO DE EXPORTACIÓN</span>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">Reportes</h1>
+                    <p class="text-slate-500 text-xs">Consulta y exportación de resultados analíticos del sistema experto.</p>
+                </div>
+                <div class="flex gap-2 relative">
+                    <button onclick="dispararExportacion()"
+                            class="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
+                        📊 Exportar reporte en Excel
+                    </button>
+
+                    <div id="alerta-exportar" class="hidden absolute right-0 top-11 z-50 bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-lg flex items-center gap-2 whitespace-nowrap animate-pulse">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        ¡Reporte exportado! Revisa tus descargas.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTROS DE BÚSQUEDA -->
+            <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-4 flex-shrink-0">
+                <form method="get" th:action="@{/admin/reportes}">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-end">
+
+                        <!-- Escuela -->
+                        <div>
+                            <label class="block text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Escuela Profesional</label>
+                            <select id="selectEscuela" name="escuela" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-indigo-500 text-slate-700 font-medium">
+                                <option value="">Todas</option>
+                                <option th:each="escuela : ${escuelas}"
+                                        th:value="${escuela.id}"
+                                        th:text="${escuela.nombre}"
+                                        th:selected="${param.escuela != null and param.escuela[0] == #strings.toString(escuela.id)}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Ciclo -->
+                        <div>
+                            <label class="block text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Ciclo</label>
+                            <select id="selectCiclo" name="ciclo" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-indigo-500 text-slate-700 font-medium">
+                                <option value="">Todos</option>
+                                <option value="I" th:selected="${param.ciclo != null and param.ciclo[0] == 'I'}">I</option>
+                                <option value="II" th:selected="${param.ciclo != null and param.ciclo[0] == 'II'}">II</option>
+                                <option value="III" th:selected="${param.ciclo != null and param.ciclo[0] == 'III'}">III</option>
+                                <option value="IV" th:selected="${param.ciclo != null and param.ciclo[0] == 'IV'}">IV</option>
+                                <option value="V" th:selected="${param.ciclo != null and param.ciclo[0] == 'V'}">V</option>
+                                <option value="VI" th:selected="${param.ciclo != null and param.ciclo[0] == 'VI'}">VI</option>
+                                <option value="VII" th:selected="${param.ciclo != null and param.ciclo[0] == 'VII'}">VII</option>
+                                <option value="VIII" th:selected="${param.ciclo != null and param.ciclo[0] == 'VIII'}">VIII</option>
+                                <option value="IX" th:selected="${param.ciclo != null and param.ciclo[0] == 'IX'}">IX</option>
+                                <option value="X" th:selected="${param.ciclo != null and param.ciclo[0] == 'X'}">X</option>
+                            </select>
+                        </div>
+
+                        <!-- Nivel -->
+                        <div>
+                            <label class="block text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Nivel</label>
+                            <select id="selectNivel" name="nivel" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:border-indigo-500 text-slate-700 font-medium">
+                                <option value="">Todos</option>
+                                <option value="ALTO" th:selected="${param.nivel != null and param.nivel[0] == 'ALTO'}">ALTO</option>
+                                <option value="MODERADO" th:selected="${param.nivel != null and param.nivel[0] == 'MODERADO'}">MODERADO</option>
+                                <option value="BAJO" th:selected="${param.nivel != null and param.nivel[0] == 'BAJO'}">BAJO</option>
+                            </select>
+                        </div>
+
+                        <!-- Botones -->
+                        <div>
+                            <button type="submit" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg py-2 text-xs transition-colors shadow-sm cursor-pointer">Filtrar</button>
+                        </div>
+                        <div>
+                            <a th:href="@{/admin/reportes}" class="block text-center bg-slate-200 hover:bg-slate-300 text-slate-600 font-semibold rounded-lg py-2 text-xs transition-colors">Limpiar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TABLA DE RESULTADOS -->
+            <div class="flex-1 bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col overflow-hidden min-h-0">
+                <div class="px-6 py-3 border-b border-slate-100 flex justify-between items-center flex-shrink-0">
+                    <h2 class="font-bold text-slate-700 flex items-center gap-2 text-sm">
+                        <span class="w-2 h-2 rounded-full bg-indigo-600"></span>Resultados de la Consulta
+                    </h2>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg font-medium"
+                          th:text="'Total registros: ' + ${evaluaciones != null ? #lists.size(evaluaciones) : 0}"></span>
+                </div>
+                <div class="flex-1 overflow-y-auto overflow-x-auto min-h-0 scrollbar-thin">
+                    <table class="w-full text-xs text-left whitespace-nowrap">
+                        <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider sticky top-0 border-b border-slate-100 z-10">
+                        <tr>
+                            <th class="p-4 pl-6">Estudiante</th>
+                            <th class="p-4">Escuela Profesional</th>
+                            <th class="p-4 text-center">Ciclo</th>
+                            <th class="p-4 text-center">Ptj. Agotamiento</th>
+                            <th class="p-4 text-center">Ptj. CINISMO</th>
+                            <th class="p-4 text-center">Ptj. BAJA EFICACIA</th>
+                            <th class="p-4 text-center">Ptj. ESTRÉS</th>
+                            <th class="p-4 text-center">Ptj. TOTAL</th>
+                            <th class="p-4 text-center">Nivel Burnout</th>
+                            <th class="p-4 pr-6 text-right">Fecha DE TEST</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                        <tr th:each="e : ${evaluaciones}" class="hover:bg-slate-50/80 transition-colors">
+                            <td class="p-4 pl-6 font-semibold text-slate-800"
+                                th:text="${e.estudiante != null ? (e.estudiante.nombres + ' ' + e.estudiante.apellidos) : '-'}"></td>
+                            <td class="p-4 text-slate-500 font-medium max-w-xs truncate"
+                                th:text="${e.estudiante?.escuelaProfesional != null ? e.estudiante.escuelaProfesional.nombre : '-'}"></td>
+                            <td class="p-4 text-center text-slate-600 font-mono"
+                                th:text="${e.estudiante?.cicloAcademico != null ? e.estudiante.cicloAcademico : '-'}"></td>
+                            <td class="p-4 text-center font-mono font-semibold text-slate-700"
+                                th:text="${e.agotamiento != null ? e.agotamiento : '0'}"></td>
+                            <td class="p-4 text-center font-mono font-semibold text-slate-700"
+                                th:text="${e.cinismo != null ? e.cinismo : '0'}"></td>
+
+                            <!-- Baja Eficacia -->
+                            <td class="p-4 text-center font-mono font-semibold text-slate-700"
+                                th:text="${e.baja_eficacia != null ? e.baja_eficacia : 0}"></td>
+
+                            <td class="p-4 text-center font-mono font-semibold text-slate-700"
+                                th:text="${e.estres != null ? e.estres : '0'}"></td>
+                            <td class="p-4 text-center font-mono font-bold text-slate-800"
+                                th:text="${e.puntajeTotal != null ? e.puntajeTotal : '0'}"></td>
+                            <td class="p-4 text-center">
+                                <span class="inline-block px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wide uppercase shadow-sm"
+                                      th:classappend="
+                                      ${e.nivelBurnout == 'ALTO' || e.nivelBurnout == 'Alto'} ? 'bg-red-50 text-red-600 border border-red-100' :
+                                      (${e.nivelBurnout == 'MODERADO' || e.nivelBurnout == 'Moderado'} ? 'bg-amber-50 text-amber-600 border border-amber-100' :
+                                      'bg-emerald-50 text-emerald-600 border border-emerald-100')"
+                                      th:text="${e.nivelBurnout != null ? e.nivelBurnout : '-'}">
+                                </span>
+                            </td>
+                            <td class="p-4 pr-6 text-right text-slate-500 font-medium"
+                                th:text="${e.fechaRegistro != null ? #temporals.format(e.fechaRegistro,'dd/MM/yyyy') : '-'}"></td>
+                        </tr>
+                        <tr th:if="${evaluaciones == null or #lists.isEmpty(evaluaciones)}">
+                            <td colspan="10" class="p-8 text-center text-slate-400">
+                                No se encontraron resultados para los filtros seleccionados.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <footer class="flex-shrink-0 flex justify-center items-center text-[11px] text-slate-400 pt-1 border-t border-slate-100/50">
+                <div> SIBA-IA © 2026 • Sistema Inteligente para la Evaluación del Burnout Académico</div>
+            </footer>
+        </main>
+    </div>
+</div>
+
+<script>
+    async function dispararExportacion() {
+        const alerta = document.getElementById('alerta-exportar');
+
+        // Obtener valores de los filtros
+        const escuela = document.getElementById('selectEscuela').value;
+        const ciclo = document.getElementById('selectCiclo').value;
+        const nivel = document.getElementById('selectNivel').value;
+
+        const params = new URLSearchParams();
+        if (escuela) params.append('escuela', escuela);
+        if (ciclo) params.append('ciclo', ciclo);
+        if (nivel) params.append('nivel', nivel);
+
+        const urlExportacion = `/admin/exportar/excel?${params.toString()}`;
+
+        try {
+            // Hacer la petición a Spring Boot para obtener el archivo
+            const response = await fetch(urlExportacion);
+
+            if (!response.ok) {
+                throw new Error('Error al descargar el reporte');
+            }
+
+            // Convertir a Blob (archivo binario de Excel)
+            const blob = await response.blob();
+            const urlBlob = window.URL.createObjectURL(blob);
+
+            // Forzar la descarga en el sistema operativo
+            const a = document.createElement('a');
+            a.href = urlBlob;
+            a.download = `Reporte_Burnout_${new Date().toISOString().slice(0,10)}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+
+            // Limpieza de memoria
+            a.remove();
+            window.URL.revokeObjectURL(urlBlob);
+
+            // Mostrar alerta de éxito
+            alerta.classList.remove('hidden');
+            setTimeout(() => {
+                alerta.classList.add('hidden');
+            }, 5000);
+
+        } catch (error) {
+            console.error('Error durante la exportación:', error);
+            alert('No se pudo generar el archivo Excel. Revisa los filtros seleccionados.');
+        }
+    }
+</script>
+</body>
+</html>

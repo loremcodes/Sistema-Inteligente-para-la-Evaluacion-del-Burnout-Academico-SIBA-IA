@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SIBA-IA Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-50 overflow-hidden h-screen">
+<div class="flex h-full w-full">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+        <div th:replace="~{admin/fragments/navbar :: navbar}"></div>
+        <main class="flex-1 p-6 flex flex-col justify-between overflow-y-auto space-y-4">
+
+            <div class="flex-shrink-0">
+                <span class="inline-block px-3 py-1 text-xs font-semibold text-indigo-700 bg-indigo-50 rounded-full mb-1">MÓDULO DE RESUMEN</span>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Dashboard </h1>
+                <p class="text-slate-500 text-xs">Análisis automatizado del riesgo de burnout académico con IA.</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 flex-shrink-0">
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex flex-col justify-center">
+                    <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Total Evaluaciones</p>
+                    <p class="text-2xl font-black text-indigo-600 mt-1" th:text="${totalEvaluaciones}">0</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex flex-col justify-center border-b-4 border-b-red-500">
+                    <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Nivel Alto</p>
+                    <p class="text-2xl font-black text-red-600 mt-1" th:text="${alto}">0</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex flex-col justify-center border-b-4 border-b-amber-500">
+                    <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Nivel Moderado</p>
+                    <p class="text-2xl font-black text-amber-500 mt-1" th:text="${moderado}">0</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex flex-col justify-center border-b-4 border-b-emerald-500">
+                    <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Nivel Bajo</p>
+                    <p class="text-2xl font-black text-emerald-600 mt-1" th:text="${bajo}">0</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col items-center justify-center min-h-[220px]">
+                <h2 class="font-bold text-slate-700 text-sm mb-2 text-left w-full flex items-center gap-2 flex-shrink-0">
+                    Distribución Global de Riesgo Académico
+                </h2>
+                <div class="w-full h-40 max-w-sm relative flex items-center justify-center">
+                    <canvas id="burnoutChart"></canvas>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col min-h-[280px]">
+                    <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider mb-3">Burnout por Carrera</h3>
+                    <div class="flex-1 relative w-full h-full">
+                        <canvas id="chartCarreras"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col min-h-[280px]">
+                    <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider mb-3">Evolución por Ciclo</h3>
+                    <div class="flex-1 relative w-full h-full">
+                        <canvas id="chartCiclos"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex flex-col min-h-[280px]">
+                    <h3 class="font-bold text-slate-700 text-xs uppercase tracking-wider mb-3">Prevalencia por Sexo</h3>
+                    <div class="flex-1 relative w-full h-full">
+                        <canvas id="chartSexo"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="flex-shrink-0 flex justify-center items-center text-[11px] text-slate-400 pt-1 border-t border-slate-100/50">
+                <div>SIBA-IA © 2026 • Sistema Inteligente para la Evaluación del Burnout Académico </div>
+            </footer>
+        </main>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const alto = [[${alto}]] || 0;
+        const moderado = [[${moderado}]] || 0;
+        const bajo = [[${bajo}]] || 0;
+
+        const ctxGlobal = document.getElementById('burnoutChart');
+        new Chart(ctxGlobal, {
+            type: 'doughnut',
+            data: {
+                labels: ['Alto', 'Moderado', 'Bajo'],
+                datasets: [{
+                    data: [alto, moderado, bajo],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                    borderWidth: 4,
+                    borderColor: '#fff',
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11, weight: '600' }, padding: 10 } }
+                },
+                cutout: '75%',
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        function procesarDatosAgrupados(rawJson, campoLlave) {
+            if (!rawJson) return { labels: [], alto: [], moderado: [], bajo: [] };
+
+            // Obtener lista única de elementos (carreras, ciclos o sexos)
+            const elementos = [...new Set(rawJson.map(d => d[campoLlave]))].sort();
+
+            const serieAlto = elementos.map(item => rawJson.find(d => d[campoLlave] === item && d.nivel === 'ALTO')?.total || 0);
+            const serieModerado = elementos.map(item => rawJson.find(d => d[campoLlave] === item && d.nivel === 'MODERADO')?.total || 0);
+            const serieBajo = elementos.map(item => rawJson.find(d => d[campoLlave] === item && d.nivel === 'BAJO')?.total || 0);
+
+            return { labels: elementos, alto: serieAlto, moderado: serieModerado, bajo: serieBajo };
+        }
+
+        // --- 1. GRÁFICO CARRERAS (Horizontal) ---
+        const rawCarreras = [(${datosCarreraJson})];
+        const dataCarrera = procesarDatosAgrupados(rawCarreras, 'carrera');
+
+        new Chart(document.getElementById('chartCarreras'), {
+            type: 'bar',
+            data: {
+                labels: dataCarrera.labels,
+                datasets: [
+                    { label: 'Alto', data: dataCarrera.alto, backgroundColor: '#ef4444' },
+                    { label: 'Moderado', data: dataCarrera.moderado, backgroundColor: '#f59e0b' },
+                    { label: 'Bajo', data: dataCarrera.bajo, backgroundColor: '#10b981' }
+                ]
+            },
+            options: {
+                indexAxis: 'y', // Convertir en barras horizontales
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        ticks: {
+                            stepSize: 1, // Números enteros en el eje X
+                            callback: function(value) { return value % 1 === 0 ? value : ''; }
+                        }
+                    },
+                    y: { stacked: true }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // --- 2. GRÁFICO CICLOS (Vertical Stacked) ---
+        const rawCiclos = [(${datosCicloJson})];
+        const dataCiclo = procesarDatosAgrupados(rawCiclos, 'ciclo');
+
+        new Chart(document.getElementById('chartCiclos'), {
+            type: 'bar',
+            data: {
+                labels: dataCiclo.labels,
+                datasets: [
+                    { label: 'Alto', data: dataCiclo.alto, backgroundColor: '#ef4444' },
+                    { label: 'Moderado', data: dataCiclo.moderado, backgroundColor: '#f59e0b' },
+                    { label: 'Bajo', data: dataCiclo.bajo, backgroundColor: '#10b981' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true },
+                    y: {
+                        stacked: true,
+                        ticks: {
+                            stepSize: 1, // Números enteros en el eje Y
+                            callback: function(value) { return value % 1 === 0 ? value : ''; }
+                        }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // --- 3. GRÁFICO SEXO (Vertical Agrupado) ---
+        const rawSexo = [(${datosSexoJson})];
+        const dataSexo = procesarDatosAgrupados(rawSexo, 'sexo');
+
+        new Chart(document.getElementById('chartSexo'), {
+            type: 'bar',
+            data: {
+                labels: dataSexo.labels,
+                datasets: [
+                    { label: 'Alto', data: dataSexo.alto, backgroundColor: '#ef4444' }, // Corregido typo backgroundCe2olor
+                    { label: 'Moderado', data: dataSexo.moderado, backgroundColor: '#f59e0b' },
+                    { label: 'Bajo', data: dataSexo.bajo, backgroundColor: '#10b981' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: false },
+                    y: {
+                        stacked: false,
+                        ticks: {
+                            stepSize: 1, // Números enteros en el eje Y
+                            callback: function(value) { return value % 1 === 0 ? value : ''; }
+                        }
+                    }
+                },
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
+            }
+        });
+    });
+</script>
+</body>
+</html>
